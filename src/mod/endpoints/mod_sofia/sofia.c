@@ -7514,6 +7514,13 @@ static void sofia_handle_sip_i_state(switch_core_session_t *session, int status,
 
 			}
 		}
+		if (status == 183 && !r_sdp && sip->sip_reason) {
+			//强制将状态改为603
+			status = 603;
+			ss_state = nua_callstate_terminated;
+			switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "Channel %s forece change state [%s][%d][%d]\n",
+						  switch_channel_get_name(channel), nua_callstate_name(ss_state), status, switch_channel_test_flag(channel, CF_EARLY_MEDIA));
+		}
 	}
 
 	if (status == 988) {
